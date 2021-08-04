@@ -1,23 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import { lazy, Suspense, useState } from 'react';
+
+const Loader = () => {
+  return (<h2>Loading...</h2>)
+}
 
 function App() {
+  const [dynamicComponent, setDynamicCOmponent] = useState(null);
+  const loadChild = () => {
+    const Child = lazy(() => import('./Child'));
+    const comp = (
+      <Suspense fallback={<Loader />}>        
+        <Child />
+      </Suspense>
+    )
+    setDynamicCOmponent(comp);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={loadChild}>Load Child</button>
+      {dynamicComponent}
     </div>
   );
 }
